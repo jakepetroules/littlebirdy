@@ -51,7 +51,7 @@ The name itself comes from an inside joke this professor had with his students, 
 Copyright and license
 ---------------------
 
-Copyright (c) 2010-2012 Jake Petroules. All rights reserved.
+Copyright (c) 2012 Jake Petroules. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
