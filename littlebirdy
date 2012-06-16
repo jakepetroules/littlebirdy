@@ -1,0 +1,58 @@
+#!/bin/bash
+set -e
+
+# In case Ghostscript resides in the current directory
+PATH=.:$PATH
+export PATH
+
+# Script physical directory
+cd $(dirname "$0") && SCRIPTDIR=$(pwd) && cd - > /dev/null
+
+# Paths and filenames
+CFG="$SCRIPTDIR/littlebirdy.ini"
+LOG="$SCRIPTDIR/littlebirdy.log"
+UNLOCKED_DIR="/tmp/littlebirdy"
+OUT_DIR="./unlocked"
+
+# If no arguments were supplied, show the usage
+if [[ $# < 1 ]] ; then
+	echo "Usage: $0 file1 file2 file3 ..."
+	exit
+fi
+
+# Make sure Ghostscript exists... for Windows it'd be gswin32c
+if [ ! -f gs ] && [ ! $(which -s gs) ] ; then
+	echo "Ghostscript is missing!"
+	exit -1
+fi
+
+# Read a list of all possible directories containing fonts, from our font config file
+# Windows would need %WINDIR%/Fonts
+FONTPATH=`cat "$CFG" | tr "\\n" ":"`
+
+# Process the files
+for f in "$@" ; do
+    if [ ! -f "$f" ] ; then
+        echo "File not found: $f"
+        exit -1
+    fi
+
+	echo -n "Enter the PDF Document Open Password for $f: "
+	read PASSWORD
+
+	# A temporary file to save the unlocked PDF to
+	mkdir -p $UNLOCKED_DIR
+	UNLOCKED_PATH="$UNLOCKED_DIR/$(basename $0).$RANDOM.$$"
+
+    # Run Ghostscript and append its output to the log file
+    gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pdfwrite -sFONTPATH="$FONTPATH" \
+       -sPDFPassword="$PASSWORD" -dPDFSettings=/prepress -dPassThroughJPEGImages=true \
+       -sOutputFile="$UNLOCKED_PATH" "$f" >> "$LOG"
+
+    # Move the unlocked PDF from the temporary file to the output path
+	if [ -f "$UNLOCKED_PATH" ] ; then
+		mkdir -p "$OUT_DIR"
+	    mv "$UNLOCKED_PATH" "$OUT_DIR/$(basename $f)"
+    	echo "Unlocked PDF saved to $OUT_DIR/$(basename $f)"
+    fi
+done

@@ -1,0 +1,14 @@
+The passwords for the documents are as follows:
+
+unrestricted.pdf:
+    Document Open Password: N/A
+    Permissions Password: N/A
+
+restricted.pdf:
+    Document Open Password: N/A
+    Permissions Password: restricted.pdf
+
+password-protected.pdf
+    Document Open Password: password-protected.pdf
+    Permissions Password: restricted.pdf
+
