@@ -43,7 +43,7 @@ if [[ $# < 1 ]] ; then
 fi
 
 # Make sure Ghostscript exists... for Windows it'd be gswin32c
-if [ ! -f gs ] && [ ! $(which gs &> /dev/null) ] ; then
+if [ ! -f gs ] && [ ! $(which gs) ] ; then
 	echo "Ghostscript is missing!"
 	exit -1
 fi
